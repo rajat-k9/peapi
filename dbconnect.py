@@ -16,6 +16,14 @@ def create_db_table():
                 created_on TEXT DEFAULT CURRENT_TIMESTAMP
             );
         ''')
+        # CREATE TABLE users (
+        #         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        #         username VARCHAR(100) UNIQUE,
+        #         name VARCHAR(100) NOT NULL,
+        #         email VARCHAR(100),
+        #         phone VARCHAR(30),
+        #         password TEXT
+        #     );
 
         conn.commit()
         print("User table created successfully")
@@ -32,12 +40,13 @@ def insert_user(user):
     try:
         conn = connect_to_db()
         cur = conn.cursor()
-        cur.execute("INSERT INTO users (username, name, email, phone, password) VALUES (?, ?, ?, ?)", (user['username'], user['name'],   
+        cur.execute("INSERT INTO users (username, name, email, phone, password) VALUES (?, ?, ?, ?, ?)", (user['username'], user['name'],   
                     user['email'], user['phone'], user['password'] ))
         conn.commit()
         inserted_user = get_user_by_id(cur.lastrowid)
-    except:
+    except Exception as e:
         conn().rollback()
+        inserted_user = {"error":e.message,"stack":e.args}
 
     finally:
         conn.close()
@@ -69,17 +78,14 @@ def login(user_data):
     user = {}
     try:
         conn = connect_to_db()
-        conn.row_factory = sqlite3.Row
         cur = conn.cursor()
-        cur.execute("SELECT id FROM users WHERE username=? and password=?", (user_data["username"], user_data["password"]))
+        cur.execute("SELECT * FROM users WHERE username=? AND password=?", (user_data["username"], user_data["password"]))
         row = cur.fetchone()
-
         # convert row object to dictionary
-        user["id"] = row["id"]
-        user["name"] = row["name"]
-    except:
-        user = {"error":"invalid credentials"}
-
+        user["id"] = row[0]
+        user["name"] = row[2]
+    except Exception as e:
+        user = {"error":e.args}
     return user
 
 def submitproduct(product_data):

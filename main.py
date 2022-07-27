@@ -1,7 +1,6 @@
-import imp
 from flask import Flask, request, jsonify #added to top of file
 from flask_cors import CORS #added to top of file
-from dbconnect import get_user_by_id,login,submitproduct,create_db_table
+from dbconnect import get_user_by_id,login,submitproduct,create_db_table,insert_user
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -13,6 +12,11 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def api_login():
     user_data = request.get_json()
     return jsonify(login(user_data))
+
+@app.route('/api/users/add',  methods = ['POST'])
+def api_add_user1():
+    user = request.get_json()
+    return jsonify(insert_user(user))
 
 @app.route('/api/users/<user_id>', methods=['GET'])
 def api_get_user(user_id):
