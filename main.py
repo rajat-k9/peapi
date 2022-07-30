@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify #added to top of file
+from flask import Flask, render_template, request, jsonify #added to top of file
 from flask_cors import CORS #added to top of file
-from dbconnect import get_user_by_id,login,submitproduct,create_db_table,insert_user
+from dbconnect import get_user_by_id,login,submitproduct,create_db_table,insert_user,daily_transaction
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -26,6 +26,11 @@ def api_get_user(user_id):
 def api_add_user():
     product = request.get_json()
     return jsonify(submitproduct(product))
+
+@app.route('/report', methods=["GET"])
+def report():
+    daily_report = daily_transaction()
+    return render_template("report.html",rows = daily_report)
 
 if __name__ == "__main__":
     #app.debug = True

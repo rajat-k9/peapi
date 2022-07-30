@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+   <body>
+      <table border = 1>
+        <thead>
+            <td>Name</td>
+            <td>Barcode</td>
+            <td>Quantity</td>
+            <td>Entry Date</td>
+         </thead>
+        {% for row in rows %}
+        <tr>
+           <td>{{row[0]}}</td>
+           <td>{{row[1]}}</td>
+           <td> {{ row[2]}}</td>
+           <td>{{row[3]}}</td>	
+        </tr>
+     {% endfor %}
+      </table>
+   </body>
+</html>
