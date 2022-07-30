@@ -105,3 +105,20 @@ def submitproduct(product_data):
         conn.close()
 
     return row_data
+
+def daily_transaction():
+    rows = {}
+    try:
+        conn = connect_to_db()
+        cur = conn.cursor()
+        cur.execute("""select u.name,r.barcode,r.qty,datetime(r.created_on ||"-05:30") as 
+        entry_time from users u join records r on u.id=r.user_id""" )
+        rows = cur.fetchall(); 
+        print(rows)
+    except:
+        conn().rollback()
+        rows = {"message": "error occured", "code":500}
+
+    finally:
+        conn.close()
+    return rows
