@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+   <body>
+    <a href="/scan">Click to scan</a>
+    <br>
+    <form method="post" action="/createorder">
+    <div>
+        Itemcode:<input type="text" readonly id="itemcode" name="itemcode" value="{{code}}"><br>
+        Quantity:<input type="number" id="qty" name="qty"><br>
+        <input type="submit" value="Submit">
+    </div>
+</form>
+   </body>
+</html>

@@ -1,6 +1,9 @@
+# from crypt import methods
+from itertools import product
+from urllib.parse import _NetlocResultMixinStr
 from flask import Flask, render_template, request, jsonify #added to top of file
 from flask_cors import CORS #added to top of file
-from dbconnect import get_user_by_id,login,submitproduct,create_db_table,insert_user,daily_transaction
+from dbconnect import get_user_by_id,login,submitproduct,create_db_table,insert_user,daily_transaction,qrscanner
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -31,6 +34,22 @@ def api_add_user():
 def report():
     daily_report = daily_transaction()
     return render_template("report.html",rows = daily_report)
+
+@app.route('/scan', methods=["GET"])
+def qrscan():
+    item_code =  qrscanner()
+    return render_template("createorder.html",code = item_code)
+
+@app.route('/createorder', methods=["GET","POST"])
+def createorder():
+    if request.method == "GET":
+        return render_template("createorder.html")
+    else:
+        qty = request.form['qty']
+        code= request.form["itemcode"]
+        product = {"user_id":1,"barcode":code,"qty":qty}
+        submitproduct(product)
+        return render_template("createorder.html")
 
 if __name__ == "__main__":
     #app.debug = True
