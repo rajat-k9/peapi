@@ -3,7 +3,7 @@ from itertools import product
 from urllib.parse import _NetlocResultMixinStr
 from flask import Flask, render_template, request, jsonify #added to top of file
 from flask_cors import CORS #added to top of file
-from dbconnect import get_user_by_id,login,submitproduct,create_db_table,insert_user,daily_transaction,qrscanner
+from dbconnect import get_user_by_id,login,submitproduct,create_db_table,insert_user,daily_transaction,qrscanner,daily_transaction_report,insert_sku_id
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -34,6 +34,16 @@ def api_add_user():
 def report():
     daily_report = daily_transaction()
     return render_template("report.html",rows = daily_report)
+
+@app.route('/jsonreport', methods=["GET"])
+def reportjson():
+    daily_report = daily_transaction_report()
+    return jsonify(daily_report)
+
+@app.route('/api/barcode/add',  methods = ['POST'])
+def api_add_barcode():
+    data = request.get_json()
+    return jsonify(insert_sku_id(data))
 
 @app.route('/scan', methods=["GET"])
 def qrscan():
